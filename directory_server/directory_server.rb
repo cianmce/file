@@ -3,7 +3,7 @@ require 'thread'
 require 'open-uri'
 require 'pathname'
 require 'json'
-require_relative 'client'
+require_relative 'directory'
 
 
 class Server
@@ -31,9 +31,9 @@ class Server
         begin   
           while @running
             if work_q.length > 0
-              client = Client.new(work_q.pop, i)
-              client.serve
-              puts "Closing client[#{i}]"
+              directory = Directory.new(work_q.pop, i)
+              directory.serve
+              puts "Closing directory[#{i}]"
             else
               sleep(0.05)
             end

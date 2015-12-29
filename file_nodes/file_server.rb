@@ -3,25 +3,25 @@ require 'thread'
 require 'open-uri'
 require 'pathname'
 require 'json'
-require_relative 'client'
+require_relative 'file_node'
 
 
 class Server
-  def initialize(student_id)
-    @student_id = student_id
+  def initialize
     @local_ip = local_ip
     @remote_ip = open('http://whatismyip.akamai.com').read
     puts "remote_ip: #{@remote_ip}"
     puts 'initialized'
   end
 
-  def run(port_number, max_threads, host='0.0.0.0')
+  def run(port_number, max_threads, node_type, host='0.0.0.0')
+    @node_type = node_type
     @running = true
     @port = port_number
     work_q = Queue.new
     @socket = TCPServer.new(host, port_number)
 
-    puts "listening on #{@remote_ip}:#{port_number}"    
+    puts "listening on #{@remote_ip}:#{port_number} - #{@node_type}"    
 
     # Starts server
     Thread.abort_on_exception = true
@@ -31,9 +31,9 @@ class Server
         begin   
           while @running
             if work_q.length > 0
-              client = Client.new(work_q.pop, i)
-              client.serve
-              puts "Closing client[#{i}]"
+              file_node = FileNode.new(work_q.pop, i, port_number, node_type)
+              file_node.serve
+              puts "Closing directory[#{i}]"
             else
               sleep(0.05)
             end
