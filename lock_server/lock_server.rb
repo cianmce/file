@@ -7,6 +7,8 @@ require 'json'
 
 class Server
   def initialize(student_id)
+    @file_lock = Mutex.new # mutex to edit the file locks
+
     @student_id = student_id
     @local_ip = local_ip
     @remote_ip = open('http://whatismyip.akamai.com').read
@@ -85,7 +87,9 @@ class Server
     param  = req['param']
     puts "method: #{method}"
     if allowed_methods.include? method
-      send(method, param, client)
+      @file_lock.synchronize do
+        send(method, param, client)
+      end
     else
       invalid(data)
     end

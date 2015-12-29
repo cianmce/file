@@ -3,14 +3,16 @@ require 'socket'
 require 'pathname'
 require 'json'
 
-
+require 'yaml'
 
 class Directory
 
   def initialize(socket, id)
-    @num_file_nodes = 2
-    @start_file_node_write_port = 6000
-    @start_file_node_read_port  = 7000
+    config = YAML.load_file(File.dirname(__FILE__)+'/../config/config.yml')
+    
+    @num_file_nodes = config['NUM_FILE_NODES']
+    @start_file_node_write_port = config['START_FILE_NODE_WRITE_PORT']
+    @start_file_node_read_port  = config['START_FILE_NODE_READ_PORT']
     @socket = socket
     @id = id
     @ranges = shard_ranges(@num_file_nodes)

@@ -4,19 +4,23 @@ require 'json'
 # Make dirs
 require 'fileutils'
 
-
+require 'yaml'
 
 class FileNode
 
   def initialize(socket, tid, port, node_type)
+
+    config = YAML.load_file(File.dirname(__FILE__)+'/../config/config.yml')
+
     @node_type = node_type
     @tid = tid
     @port = port
-    @start_file_node_write_port = 6000
-    @start_file_node_read_port  = 7000
+    @start_file_node_write_port = config['START_FILE_NODE_WRITE_PORT']
+    @start_file_node_read_port  = config['START_FILE_NODE_READ_PORT']
+    @port_difference = @start_file_node_read_port - @start_file_node_write_port
     @socket = socket
 
-    @base_dir = "#{Dir.pwd}/files/#{@node_type}_node_#{@port}"
+    @base_dir = "#{File.dirname(__FILE__)}/files/#{@node_type}_node_#{@port}"
     FileUtils.mkdir_p(@base_dir)
     puts "made: #{@base_dir}"
 
@@ -97,7 +101,7 @@ class FileNode
     f.close()
 
     if @node_type=='primary'
-      port =  @port.to_i+1000
+      port =  @port.to_i+@port_difference
       puts "sending write to slave: #{port}"
 
       file_node_socket = TCPSocket.open('localhost', port)
@@ -120,7 +124,7 @@ class FileNode
     FileUtils.mkdir_p(path)
 
     if @node_type=='primary'
-      port =  @port.to_i+1000
+      port =  @port.to_i+@port_difference
       puts "sending mkdir to slave: #{port}"
 
       file_node_socket = TCPSocket.open('localhost', port)

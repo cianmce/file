@@ -1,12 +1,12 @@
-# ./start_primary.sh AMOUNT START_PORT
+# ./start_primary.sh ID START_PORT
+# ./start_primary.sh 0
+# ./start_primary.sh 1
 
-AMOUNT=${1:-2}
+NODE_ID=${1:-0}
 START_PORT=${2:-6000}
 
+MYDIR="$(dirname "$(readlink -f "$0")")"
+file_name=$MYDIR/app.rb
 
-# ruby app.rb $1
-for ((i=0; i<$AMOUNT; i++)); do
-    PORT=$(($i + $START_PORT));
-    # echo "ruby app.rb primary $PORT";
-    (ruby app.rb primary $PORT;)&
-done
+PORT=$(($NODE_ID + $START_PORT));
+ruby $file_name primary $PORT;

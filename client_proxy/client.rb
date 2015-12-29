@@ -2,10 +2,15 @@ require 'socket'
 require 'pathname'
 require 'json'
 
+require 'yaml'
+
 
 class Client
   def initialize(socket, id)
-    @lock_server_port = 5002
+    config = YAML.load_file(File.dirname(__FILE__)+'/../config/config.yml')
+    
+    @lock_server_port = config['LOCK_SERVER_PORT']
+    @directory_server_port = config['DIRECTORY_SERVER_PORT']
     @socket = socket
     @id = id
     @current_directory = "/"
@@ -37,7 +42,6 @@ class Client
   def process_data(data)
     puts "processing '#{data}'"
     if data.start_with?("ls")
-      # directory listing
       ls(data)
     elsif data.start_with?("pwd")
       pwd(data)
@@ -50,7 +54,7 @@ class Client
     elsif data.start_with?("write")
       write_file(data)
     elsif data.start_with?("rm")
-      remove_file(data)
+      remove(data)
     else
       invalid(data)
     end
@@ -165,8 +169,8 @@ class Client
       return
     end
     size = res['response']
-    puts "Sleeping 10..."
-    sleep(10)
+    puts "Sleeping 5..."
+    sleep(5)
     puts "awake"
 
     # unlock file
@@ -179,7 +183,7 @@ class Client
     write_back(size, 200)
   end
 
-  def remove_file(data)
+  def remove(data)
     # e.g.
     # rm some/file.txt
     # rm -rf some/file.txt
@@ -348,7 +352,7 @@ class Client
   def lookup(path, mode='write', type="file")
     puts "looking up: #{path}"
     # Open socket to directory server
-    directory_socket = TCPSocket.open('localhost', 5001)
+    directory_socket = TCPSocket.open('localhost', @directory_server_port)
     response = make_request('lookup', [path, mode, type], directory_socket)
     directory_socket.close
     return response

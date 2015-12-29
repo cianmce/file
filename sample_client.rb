@@ -1,8 +1,11 @@
 require 'socket'
 require 'json'
 
+require 'yaml'
+config = YAML.load_file('config/config.yml')
 
-DEFAULT_PORT = 5000 # client proxy
+
+DEFAULT_PORT = config['CLIENT_PROXY_PORT']
 port_number  = ARGV[0] || DEFAULT_PORT
 hostname = "localhost"
 

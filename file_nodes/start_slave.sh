@@ -1,11 +1,12 @@
-# ./start_slave.sh AMOUNT START_PORT
+# ./start_slave.sh ID START_PORT
+# ./start_slave.sh 0
+# ./start_slave.sh 1
 
-AMOUNT=${1:-2} # default 2
+NODE_ID=${1:-0}
 START_PORT=${2:-7000}
 
+MYDIR="$(dirname "$(readlink -f "$0")")"
+file_name=$MYDIR/app.rb
 
-# ruby app.rb $1
-for ((i=0; i<$AMOUNT; i++)); do
-    PORT=$(($i + $START_PORT));
-    echo "ruby app.rb slave $PORT"; 
-done
+PORT=$(($NODE_ID + $START_PORT));
+ruby $file_name slave $PORT;

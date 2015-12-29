@@ -1,9 +1,11 @@
 require_relative 'directory_server'
 
+require 'yaml'
+config = YAML.load_file(File.dirname(__FILE__)+'/../config/config.yml')
 
-MAX_THREADS  = 5
+MAX_THREADS  = config['MAX_THREADS']
 STUDENT_ID   = 'a04dcb0fee025f2b48663ba413d0b8d481db11b65b254d41e3611b834c17d6d5'
-DEFAULT_PORT = 5001
+DEFAULT_PORT = config['DIRECTORY_SERVER_PORT']
 port_number  = ARGV[0] || DEFAULT_PORT
 
 
