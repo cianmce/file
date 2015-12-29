@@ -7,7 +7,34 @@ Each "file node" is in charge of a number of directories in the base directory t
 
 e.g. with 2 nodes, the 1st take the any directory containing a-m and the 2nd takes n-z
 
-Any directories starting with a number or special character will be placed in the first or last node depending where that character is in the ASCII table
+Any directories starting with a number or special character will be placed in the first or last node depending where that character is in the ASCII table.
+
+All servers communicate with each other with a single line of JSON that follows the schema
+
+```json
+
+{
+    "method": "method_name",
+    "param": "params for this action"
+}
+
+```
+
+e.g.
+
+```json
+
+{
+"method": "lookup",
+    "param": [
+        "write",
+        "a_Dir/file.txt"
+    ]
+}
+
+```
+
+
 
 # Start
 ## Start file nodes
@@ -54,15 +81,26 @@ Interprets command sent be the client. Contacts directory, lock and file servers
 
 #### Client usage
 
+Commands:
+
+`ls`, `pwd`, `cd`, `mkdir`, `read`/`cat`, `write`, `rm`, `exit`
+
+
+**ls**
+
 `ls [-l]` - Directory list for current directory - stored by the client proxy for each socket, flag -l lists file vertically 
 
 e.g.
 `ls` -> `zz.txt  a_folder/`
 
+**pwd**
+
 `pwd` - Print Working Directory - stored by the client proxy for each socket
 
 e.g.
 `pwd` -> `/a_folder`
+
+**cd**
 
 `cd <directory_name>` - Change Directory
 
@@ -73,11 +111,15 @@ e.g.
 
 `cd ..` -> `/`
 
+**mkdir**
+
 `mkdir <directory_name>` - Make a directory
 
 e.g.
 
 `mkdir fff` -> `created`
+
+**read/cat**
 
 `read <file_name>` or `cat <file_name>` - Display the contents of a file
 
@@ -87,6 +129,7 @@ e.g.
 
 `read a_folder/zz.txt` -> `some test`
 
+**write**
 
 `write <file_name> [-a] "<contents>"` - Writes contents to file. Append, -a, flag appends contents to file. \n and \t can be used to make new lines and tabs. Returns number of bytes written
 
@@ -95,6 +138,8 @@ e.g.
 `write zz.txt -a "some stuff\nmore stuff\n\t\tIndented\n"` -> `33`
 
 `write a_folder/zz.txt "some stuff\nmore stuff\n\t\tIndented\n"` -> `33`
+
+**rm**
 
 `rm [-rf] <file_name or directory>` - Deletes a folder or file and everything in the directorys
 
@@ -106,7 +151,6 @@ e.g.
 
 `rm -rf a_folder"` -> `done`
 
+**exit**
+
 `exit` - Closes socket and quits
-
-
-
