@@ -5,11 +5,15 @@ Each "file node" is in charge of a number of directories in the base directory t
 ![Flow](img/file_server.png)
 
 
+The client proxy checks the directory server to see what port the required file on is or if it exists. Contacts lock server and sleeps until the file can be locked. Locks file.
+Sends command to read/write file or directory to appropriate file node. File node replies directly to client proxy who forwards response to client.
+
+
 e.g. with 2 nodes, the 1st take the any directory containing a-m and the 2nd takes n-z
 
 Any directories starting with a number or special character will be placed in the first or last node depending where that character is in the ASCII table.
 
-All servers communicate with each other with a single line of JSON that follows the schema
+All servers communicate with each other with a single line of JSON that follows the schema.
 
 ```json
 
@@ -65,8 +69,7 @@ e.g. With 2 file servers, and base file or directory beginning with [a-m] would 
 
 ## Client Proxy
 
-Interprets command sent be the client. Contacts directory, lock and file servers using JSON
-
+Interprets command sent be the client. Contacts directory, lock and file servers.
 
 
 `./client_proxy/start.sh`
