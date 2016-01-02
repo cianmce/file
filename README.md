@@ -41,6 +41,13 @@ e.g.
 
 
 # Start
+## Start Everything
+
+If iterm is installed, start everything using: 
+
+`./big_magic_run_script.sh`
+
+
 ## Start file nodes
 
 #### Primary Nodes
@@ -86,7 +93,7 @@ Interprets command sent be the client. Contacts directory, lock and file servers
 
 Commands:
 
-`ls`, `pwd`, `cd`, `mkdir`, `read`/`cat`, `write`, `rm`, `exit`
+`ls`, `pwd`, `cd`, `mkdir`, `read`/`cat`, `write`, `rm`, `exit`, `help`
 
 
 **ls**
@@ -157,3 +164,8 @@ e.g.
 **exit**
 
 `exit` - Closes socket and quits
+
+
+**help**
+
+`help` - Client proxy sends help description

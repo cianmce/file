@@ -55,6 +55,8 @@ class Client
       write_file(data)
     elsif data.start_with?("rm")
       remove(data)
+    elsif data.start_with?("help")
+      help(data)
     else
       invalid(data)
     end
@@ -62,6 +64,19 @@ class Client
 
   def invalid(data)
     write_back("invalid command '#{data}'", 400)
+  end
+
+  def help(data)
+    text = "\nls [-l]: directory listing. -l to list vertically\n"
+    text += "pwd: print working directory\n"
+    text += "cd <directory>: change directory\n"
+    text += "mkdir <directory>: make directory\n"
+    text += "read/cat <file>: view contents of a file\n"
+    text += "write <file> [-a] \"<contents of file>\": write to a file. -a appends to a file, \\n and \\t add new lines and tabs\n"
+    text += "rm [-rf]: remove files or directories. -rf to remove directory and all contents\n"
+    text += "exit: close client connection\n"
+    text += "help: view help\n\n\n"
+    write_back(text, 200)
   end
 
   def write_back(response, status)
@@ -169,8 +184,10 @@ class Client
       return
     end
     size = res['response']
-    puts "Sleeping 5..."
-    sleep(5)
+
+    # Simulate a long time to write
+    puts "Sleeping 2..."
+    sleep(2)
     puts "awake"
 
     # unlock file
